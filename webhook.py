@@ -2,16 +2,24 @@ from flask import Flask, request, jsonify, Response, make_response
 import base64
 import json
 import logging
+import os
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 
 WAZUH_IMAGE = os.getenv("WAZUH_SIDECAR_IMAGE", "kennyopennix/wazuh-agent:latest")
-WAZUH_GROUPS = os.getenv("WAZUH_GROUPS", "default")
 JOIN_MANAGER = os.getenv("JOIN_MANAGER", "10.1.0.39")
+JOIN_MANAGER_WORKER_HOST = os.getenv("JOIN_MANAGER_WORKER_HOST", "10.1.0.39")
+JOIN_PASSWORD = os.getenv("JOIN_PASSWORD", "password")
 JOIN_MANAGER_PORT = os.getenv("JOIN_MANAGER_PORT", "1514")
+JOIN_MANAGER_MASTER_HOST = os.getenv("JOIN_MANAGER_MASTER_HOST", "10.1.0.39")
 JOIN_MANAGER_PROTOCOL = os.getenv("JOIN_MANAGER_PROTOCOL", "https")
 JOIN_MANAGER_API_PORT = os.getenv("JOIN_MANAGER_API_PORT", "55000")
+WAZUH_GROUPS = os.getenv("WAZUH_GROUPS", "default")
+HEALTH_CHECK_PROCESSES = os.getenv(
+    "HEALTH_CHECK_PROCESSES",
+    "ossec-execd,ossec-syscheckd,ossec-logcollector,wazuh-modulesd,ossec-authd"
+)
 
 wazuh_sidecar = {
     "name": "wazuh-agent",
@@ -19,11 +27,12 @@ wazuh_sidecar = {
     "securityContext": {"runAsUser": 0},
     "env": [
         {"name": "JOIN_MANAGER", "value": JOIN_MANAGER},
+        {"name": "JOIN_MANAGER_WORKER_HOST", "value": JOIN_MANAGER_WORKER_HOST},
+        {"name": "JOIN_PASSWORD", "value": JOIN_PASSWORD},
         {"name": "JOIN_MANAGER_PORT", "value": JOIN_MANAGER_PORT},
+        {"name": "JOIN_MANAGER_MASTER_HOST", "value": JOIN_MANAGER_MASTER_HOST},
         {"name": "JOIN_MANAGER_PROTOCOL", "value": JOIN_MANAGER_PROTOCOL},
         {"name": "JOIN_MANAGER_API_PORT", "value": JOIN_MANAGER_API_PORT},
-        {"name": "WAZUH_GROUPS", "value": WAZUH_GROUPS},
-        # Secret-based credentials
         {
             "name": "JOIN_MANAGER_USER",
             "valueFrom": {"secretKeyRef": {"name": "wazuh-manager-credentials", "key": "JOIN_MANAGER_USER"}}
@@ -36,9 +45,11 @@ wazuh_sidecar = {
             "name": "NODE_NAME",
             "valueFrom": {"fieldRef": {"fieldPath": "metadata.name"}}
         },
+        {"name": "WAZUH_GROUPS", "value": WAZUH_GROUPS},
+        {"name": "HEALTH_CHECK_PROCESSES", "value": HEALTH_CHECK_PROCESSES}
     ],
     "volumeMounts": [
-        {"name": "app-logs", "mountPath": "/var/log/app"}
+        {"name": "app-logs", "mountPath": "/var/log/app"},
     ]
 }
 
