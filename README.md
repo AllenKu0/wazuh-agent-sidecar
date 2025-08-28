@@ -1,8 +1,8 @@
 * Docker Build
 ```
-docker build -t wazuh-webhook:v1.0 .
-docker tag wazuh-webhook:v1.0 allenku0/wazuh-webhook:v1.0
-docker push allenku0/wazuh-webhook:v1.0
+docker build -t wazuh-webhook:v1.0
+docker tag wazuh-webhook:v1.0 <your_repository_username>/wazuh-webhook:v1.0
+docker push <your_repository_username>/wazuh-webhook:v1.0
 ```
 * 產生tls、ca檔
 ```
