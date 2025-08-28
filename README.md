@@ -6,6 +6,11 @@ docker push <your_repository_username>/wazuh-webhook:v1.0
 ```
 * 產生tls、ca檔
 ```
+openssl genrsa -out ca.key 2048
+openssl req -x509 -new -nodes -key ca.key -subj "/CN=wazuh-webhook-ca" -days 365 -out ca.crt
+<!-- cat 放到MutatingWebhookConfiguration的cuBundle中，不能換行 -->
+cat ca.crt | base64 | tr -d '\n'
+
 openssl genrsa -out tls.key 2048
 
 openssl req -new -key tls.key -subj "/CN=wazuh-webhook-svc.default.svc" -out tls.csr
