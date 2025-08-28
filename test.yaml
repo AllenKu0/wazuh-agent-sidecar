@@ -4,6 +4,7 @@ metadata:
   name: test-nginx
   labels:
     app: test-nginx
+    # sidecar-injection: "true"
 spec:
   containers:
     - name: test-nginx
