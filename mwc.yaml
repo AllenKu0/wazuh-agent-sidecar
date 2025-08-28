@@ -15,6 +15,12 @@ webhooks:
         apiGroups: [""]
         apiVersions: ["v1"]
         resources: ["pods"]
+    # namespaceSelector:
+    #   matchLabels:
+    #     sidecar-injection: enabled
+    objectSelector:
+      matchLabels:
+        sidecar-injection: "true"    
     admissionReviewVersions: ["v1"]
     sideEffects: None
 
