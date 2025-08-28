@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: webhook
-        image: allenku0/wazuh-webhook:v1.1
+        image: allenku0/wazuh-webhook:v1.2
         imagePullPolicy: Always
         ports:
         - containerPort: 8443

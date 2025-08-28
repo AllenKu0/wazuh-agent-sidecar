@@ -10,10 +10,6 @@ WORKDIR /app
 # 複製 Python Webhook 程式
 COPY webhook.py /app/webhook.py
 
-# # 複製 TLS 憑證（或掛載到 /tls）
-# COPY tls.crt /tls/tls.crt
-# COPY tls.key /tls/tls.key
-
 # 設定環境變數（可選）
 ENV FLASK_APP=webhook.py
 ENV FLASK_RUN_HOST=0.0.0.0

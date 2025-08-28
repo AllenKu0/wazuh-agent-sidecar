@@ -6,47 +6,36 @@ logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 
-# Sidecar container 定義（包含你提供的 env 設定）
+WAZUH_IMAGE = os.getenv("WAZUH_SIDECAR_IMAGE", "kennyopennix/wazuh-agent:latest")
+WAZUH_GROUPS = os.getenv("WAZUH_GROUPS", "default")
+JOIN_MANAGER = os.getenv("JOIN_MANAGER", "10.1.0.39")
+JOIN_MANAGER_PORT = os.getenv("JOIN_MANAGER_PORT", "1514")
+JOIN_MANAGER_PROTOCOL = os.getenv("JOIN_MANAGER_PROTOCOL", "https")
+JOIN_MANAGER_API_PORT = os.getenv("JOIN_MANAGER_API_PORT", "55000")
+
 wazuh_sidecar = {
     "name": "wazuh-agent",
-    "image": "kennyopennix/wazuh-agent:latest",
+    "image": WAZUH_IMAGE,
     "securityContext": {"runAsUser": 0},
     "env": [
-        {"name": "JOIN_MANAGER", "value": "10.1.0.39"},
-        {"name": "JOIN_MANAGER_WORKER_HOST", "value": "10.1.0.39"},
-        {"name": "JOIN_PASSWOR", "value": "password"},
-        {"name": "JOIN_MANAGER_PORT", "value": "1514"},
-        {"name": "JOIN_MANAGER_MASTER_HOST", "value": "10.1.0.39"},
-        {"name": "JOIN_MANAGER_PROTOCOL", "value": "https"},
-        {"name": "JOIN_MANAGER_API_PORT", "value": "55000"},
+        {"name": "JOIN_MANAGER", "value": JOIN_MANAGER},
+        {"name": "JOIN_MANAGER_PORT", "value": JOIN_MANAGER_PORT},
+        {"name": "JOIN_MANAGER_PROTOCOL", "value": JOIN_MANAGER_PROTOCOL},
+        {"name": "JOIN_MANAGER_API_PORT", "value": JOIN_MANAGER_API_PORT},
+        {"name": "WAZUH_GROUPS", "value": WAZUH_GROUPS},
+        # Secret-based credentials
         {
             "name": "JOIN_MANAGER_USER",
-            "valueFrom": {
-                "secretKeyRef": {
-                    "name": "wazuh-manager-credentials",
-                    "key": "JOIN_MANAGER_USER"
-                }
-            }
+            "valueFrom": {"secretKeyRef": {"name": "wazuh-manager-credentials", "key": "JOIN_MANAGER_USER"}}
         },
         {
             "name": "JOIN_MANAGER_PASSWORD",
-            "valueFrom": {
-                "secretKeyRef": {
-                    "name": "wazuh-manager-credentials",
-                    "key": "JOIN_MANAGER_PASSWORD"
-                }
-            }
+            "valueFrom": {"secretKeyRef": {"name": "wazuh-manager-credentials", "key": "JOIN_MANAGER_PASSWORD"}}
         },
         {
             "name": "NODE_NAME",
-            "valueFrom": {
-                "fieldRef": {
-                    "fieldPath": "metadata.name"
-                }
-            }
+            "valueFrom": {"fieldRef": {"fieldPath": "metadata.name"}}
         },
-        {"name": "WAZUH_GROUPS", "value": "default"},
-        {"name": "HEALTH_CHECK_PROCESSES", "value": "ossec-execd,ossec-syscheckd,ossec-logcollector,wazuh-modulesd,ossec-authd"}
     ],
     "volumeMounts": [
         {"name": "app-logs", "mountPath": "/var/log/app"},
@@ -54,7 +43,6 @@ wazuh_sidecar = {
     ]
 }
 
-# 自動掛載的 Volume
 wazuh_volumes = [
     {"name": "app-logs", "emptyDir": {}},
     {"name": "suricata-logs", "emptyDir": {}}
