@@ -17,6 +17,14 @@ EOF
 
 openssl x509 -req -in tls.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out tls.crt -days 365 -extfile config.cnf -extensions v3_ext
 ```
+* sercrete創建
+```
+kubectl create secret tls wazuh-webhook-tls --cert=tls.crt --key=tls.key
+```
+* 從wazuh server 看wui的credential
+```
+kubectl apply -f wazuh-manager-credentials.yaml
+```
 * 測試(順序很重要，先跑mwc會讓之後建pod都觸發webhook)
 ```
 kubectl apply -f webhook.yaml 
