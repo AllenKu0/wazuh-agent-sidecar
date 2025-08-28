@@ -21,7 +21,7 @@ openssl x509 -req -in tls.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out tls.
 ```
 kubectl create secret tls wazuh-webhook-tls --cert=tls.crt --key=tls.key
 ```
-* 從wazuh server 看wui的credential
+* 從wazuh server 看wazuh-wui的credential(sudo tar -O -xvf wazuh-install-files.tar wazuh-install-files/wazuh-passwords.txt)
 ```
 kubectl apply -f wazuh-manager-credentials.yaml
 ```
