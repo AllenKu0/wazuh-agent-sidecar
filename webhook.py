@@ -10,7 +10,6 @@ app = Flask(__name__)
 WAZUH_IMAGE = os.getenv("WAZUH_SIDECAR_IMAGE", "kennyopennix/wazuh-agent:latest")
 JOIN_MANAGER = os.getenv("JOIN_MANAGER", "10.1.0.39")
 JOIN_MANAGER_WORKER_HOST = os.getenv("JOIN_MANAGER_WORKER_HOST", "10.1.0.39")
-JOIN_PASSWORD = os.getenv("JOIN_PASSWORD", "password")
 JOIN_MANAGER_PORT = os.getenv("JOIN_MANAGER_PORT", "1514")
 JOIN_MANAGER_MASTER_HOST = os.getenv("JOIN_MANAGER_MASTER_HOST", "10.1.0.39")
 JOIN_MANAGER_PROTOCOL = os.getenv("JOIN_MANAGER_PROTOCOL", "https")
@@ -28,7 +27,6 @@ wazuh_sidecar = {
     "env": [
         {"name": "JOIN_MANAGER", "value": JOIN_MANAGER},
         {"name": "JOIN_MANAGER_WORKER_HOST", "value": JOIN_MANAGER_WORKER_HOST},
-        {"name": "JOIN_PASSWORD", "value": JOIN_PASSWORD},
         {"name": "JOIN_MANAGER_PORT", "value": JOIN_MANAGER_PORT},
         {"name": "JOIN_MANAGER_MASTER_HOST", "value": JOIN_MANAGER_MASTER_HOST},
         {"name": "JOIN_MANAGER_PROTOCOL", "value": JOIN_MANAGER_PROTOCOL},
