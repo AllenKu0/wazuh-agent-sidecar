@@ -39,13 +39,11 @@ wazuh_sidecar = {
     ],
     "volumeMounts": [
         {"name": "app-logs", "mountPath": "/var/log/app"},
-        {"name": "suricata-logs", "mountPath": "/var/log/suricata"}
     ]
 }
 
 wazuh_volumes = [
     {"name": "app-logs", "emptyDir": {}},
-    {"name": "suricata-logs", "emptyDir": {}}
 ]
 
 def build_response(uid: str, allowed: bool, patch=None, message: str | None = None):
