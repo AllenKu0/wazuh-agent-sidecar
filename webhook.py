@@ -38,7 +38,7 @@ wazuh_sidecar = {
         },
     ],
     "volumeMounts": [
-        {"name": "app-logs", "mountPath": "/var/log/app"},
+        {"name": "app-logs", "mountPath": "/var/log/app"}
     ]
 }
 
