@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-wazuh-agent
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.29.1
+
+      - name: wazuh-agent
+        image: kennyopennix/wazuh-agent:latest
+        securityContext:
+          runAsUser: 0
+        env:
+        - name: JOIN_MANAGER
+          value: "10.1.0.39"
+        - name: JOIN_MANAGER_WORKER_HOST
+          value: "10.1.0.39"
+        - name: JOIN_MANAGER_PORT
+          value: "1514"
+        - name: JOIN_MANAGER_MASTER_HOST
+          value: "10.1.0.39"
+        - name: JOIN_MANAGER_PROTOCOL
+          value: "https"
+        - name: JOIN_MANAGER_API_PORT
+          value: "55000"
+        - name: JOIN_MANAGER_USER
+          value: "wazuh-wui"
+        - name: JOIN_MANAGER_PASSWORD
+          value: "M8Ud7gbOMOJuay9p*W.tR+wkVgHKeTG2"
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: WAZUH_GROUPS
+          value: default
+        - name: HEALTH_CHECK_PROCESSES
+          value: "ossec-execd,ossec-syscheckd,ossec-logcollector,wazuh-modulesd,ossec-authd"
+        volumeMounts:
+        - name: app-logs
+          mountPath: /var/log/nginx
+
+      volumes:
+      - name: app-logs
+        emptyDir: {}
