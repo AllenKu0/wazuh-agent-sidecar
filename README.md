@@ -30,6 +30,7 @@ kubectl create secret tls wazuh-webhook-tls --cert=tls.crt --key=tls.key
 先編碼
 ```
 echo -n 'wazuh-wui' | base64
+echo -n '你的password' | base64
 ```
 存進 wazuh-manager-credentials.yaml 檔後
 ```
